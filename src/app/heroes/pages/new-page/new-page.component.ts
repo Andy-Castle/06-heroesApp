@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Publisher } from '../../interfaces/hero.interfaces';
+import { Hero, Publisher } from '../../interfaces/hero.interfaces';
+import { HeroesService } from '../../services/heroes.service';
 
 @Component({
   selector: 'app-new-page',
@@ -8,6 +9,8 @@ import { Publisher } from '../../interfaces/hero.interfaces';
   styles: [],
 })
 export class NewPageComponent implements OnInit {
+  constructor(private heroesService: HeroesService) {}
+
   public heroForm = new FormGroup({
     id: new FormControl<string>(''),
     superhero: new FormControl<string>('', { nonNullable: true }),
@@ -29,11 +32,16 @@ export class NewPageComponent implements OnInit {
     },
   ];
 
+  get currentHero(): Hero {
+    const hero = this.heroForm.value as Hero;
+
+    return hero;
+  }
+
   onSubmit(): void {
-    console.log({
-      formIsValid: this.heroForm.valid,
-      value: this.heroForm.value,
-    });
+    if (this.heroForm.invalid) return;
+
+    // this.heroesService.updateHero();
   }
 
   ngOnInit(): void {}
