@@ -11,19 +11,20 @@ import {
 import { Observable, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-// const checkAuthStatus = (): boolean | Observable<boolean> => {
-//   //se inyectan el AuthService y el Router
-//   const authService: AuthService = inject(AuthService);
-//   const router: Router = inject(Router);
+const checkAuthStatus = (): boolean | Observable<boolean> => {
+  //se inyectan el AuthService y el Router
+  const authService: AuthService = inject(AuthService);
+  const router: Router = inject(Router);
 
-//   return authService.checkAuthentication().pipe(
-//     tap((isAuthenticated) => {
-//       if (!isAuthenticated) {
-//         router.navigate(['/auth/login']);
-//       }
-//     })
-//   );
-// };
+  return authService.checkAuthentication().pipe(
+    tap((isAuthenticated) => console.log('Authenticated', isAuthenticated)),
+    tap((isAuthenticated) => {
+      if (!isAuthenticated) {
+        router.navigate(['/auth/login']);
+      }
+    })
+  );
+};
 
 // Guardián CanActivate: Controla si una ruta puede ser activada
 export const canActivateGuard: CanActivateFn = (
@@ -33,12 +34,12 @@ export const canActivateGuard: CanActivateFn = (
   state: RouterStateSnapshot
 ) => {
   // Debug: Mostrar en consola cuando se ejecuta este guardián
-  console.log('CanActivate');
-  console.log({ route, state }); // Imprimir detalles de la ruta y estado
+  //console.log('CanActivate');
+  //console.log({ route, state }); // Imprimir detalles de la ruta y estado
 
   // Lógica de control de acceso (siempre deniega en este ejemplo)
   // En aplicación real aquí iría una condición (ej: verificar autenticación)
-  return true;
+  return checkAuthStatus();
   // true = permitir acceso, false = bloquear acceso
 };
 
@@ -50,11 +51,11 @@ export const canMatchGuard: CanMatchFn = (
   segments: UrlSegment[]
 ) => {
   // Debug: Mostrar en consola cuando se ejecuta este guardián
-  console.log('CanMatch');
-  console.log({ route, segments }); // Imprimir detalles de configuración y segmentos
+  //console.log('CanMatch');
+  //console.log({ route, segments }); // Imprimir detalles de configuración y segmentos
 
   // Lógica para determinar si la ruta debe coincidir
   // En aplicación real podría usarse para evitar cargar módulos innecesarios
-  return true;
+  return checkAuthStatus();
   // true = permitir coincidencia, false = evitar que la ruta coincida
 };
